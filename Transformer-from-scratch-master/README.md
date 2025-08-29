@@ -1,95 +1,77 @@
-# Transformer from scratch
+# Transformer from Scratch (学习版)
 
-This is a **Transformer** based **Large Language Model (LLM)** training demo with only _~240 lines of code_.
+本仓库内容基于 [Wayland Zhang](https://github.com/waylandzhang) 老师的开源仓库和课程视频整理学习。  
+原始实现请参考：[nanoGPT](https://github.com/karpathy/nanoGPT) 和 [张老师的仓库](https://github.com/waylandzhang/transformer-from-scratch)。  
 
-Inspired by [nanoGPT](https://github.com/karpathy/nanoGPT), I wrote this demo to show how to train a LLM from scratch using PyTorch. 
-The code is very simple and easy to understand. It's a good start point for beginners to learn how to train a LLM.
+> ⚠️ 本仓库仅作个人学习与课程跟练使用，不涉及原创贡献，如需使用或引用，请以原仓库为准。
 
-The demo is trained on a 450Kb [sample textbook](https://huggingface.co/datasets/goendalf666/sales-textbook_for_convincing_and_selling/raw/main/sales_textbook.txt) dataset, and the model size is about 51M. 
-I trained on a single i7 CPU, and the training time takes about 20 minutes, result in approximately ~1.3M parameters.
+---
 
+## 项目简介
 
-# Get Started
+这是一个 **Transformer 架构的 Large Language Model (LLM)** 训练 Demo，仅使用 _约 240 行代码_。  
 
-1. Install dependencies
+通过该 Demo，可以从零开始理解如何用 PyTorch 训练一个简单的 LLM。  
+代码简洁易懂，适合作为入门学习材料。
 
-```
+- 训练数据：约 450 KB [sample textbook](https://huggingface.co/datasets/goendalf666/sales-textbook_for_convincing_and_selling/raw/main/sales_textbook.txt)  
+- 模型大小：约 51M  
+- 参数量：约 1.3M  
+- 硬件：单台 i7 CPU  
+- 训练时间：约 20 分钟
+
+---
+
+## 🚀 快速开始
+
+### 1. 安装依赖
+
+```bash
 pip install numpy requests torch tiktoken
-```
-2. Run model.py
 
-First time when you run it, the program will download the dataset and save to `data` folder.
-Then the model will start training on the dataset. Training & validation `losses` will be printed on the console screen, something like:
+### 2. 运行模型训练
 
-``` 
+```bash
+python model.py
+
+- 第一次运行会自动下载数据集并保存到 data 文件夹。
+
+- 模型将在数据集上开始训练，并在控制台输出训练与验证 Loss，例如：
+
 Step: 0 Training Loss: 11.68 Validation Loss: 11.681
 Step: 20 Training Loss: 10.322 Validation Loss: 10.287
 Step: 40 Training Loss: 8.689 Validation Loss: 8.783
-Step: 60 Training Loss: 7.198 Validation Loss: 7.617
-Step: 80 Training Loss: 6.795 Validation Loss: 7.353
-Step: 100 Training Loss: 6.598 Validation Loss: 6.789
 ...
-```
- 
-The training loss will decrease as the training goes on. After 5000 iterations, the training will stop and the losses are down to around `2.807`. The model will be saved under name `model-ckpt.pt`.
 
-Then a sample text will be generated and pop to the console screen from the model we just trained, something like:
+- 5000 次迭代后，Loss 会下降到约 2.807，模型会保存为 model-ckpt.pt。
+- 训练完成后，会在控制台输出模型生成文本示例，例如：
+The salesperson to identify the other cost savings interaction towards a nextProps audience, ...
+提示：可以修改 model.py 顶部的超参数，观察训练效果的变化。
 
-```text
-The salesperson to identify the other cost savings interaction towards a nextProps audience, and interactive relationships with them. Creating a genuine curiosityouraging a persuasive knowledge, focus on the customer's strengths and responding, as a friendly and thoroughly authority. 
-Encouraging open communication style to customers that their values in the customer's individual finding the conversation.2. Addressing a harmoning ConcernBIG: Giving and demeanor is another vital aspect of practicing a successful sales interaction. By sharing case studies, addressing any this compromising clearly, pis
-```
+### Step-by-Step Notebook
 
-It looks pretty descent!
+本仓库提供 step-by-step.ipynb，逐步展示 Transformer 的计算过程。
+运行前需要安装额外依赖：
 
-Feel free to change some of the hyperparameters on the top of the `model.py` file, and see how it affects the training process.
-
-3. Step-by-step Jupyter Notebook
-
-I also provide a step-by-step Jupyter Notebook `step-by-step.ipynb` to help you understand the architecture logic. To run this, you also need to insall:
-
-```
+```bash
 pip install matplotlib pandas
-```
 
-This notebook prints out the intermediate results of each step followed by Transformer architecture from original paper, but only the **Decoder** part (Since GPT only use the decoder). So you can see how the model is trained each single step. For examples:
+Notebook 中包含：
 
-- what a [4,16] matrix of input embedding looks like:
+- [x] 输入嵌入矩阵示例  
+- [x] 位置编码可视化  
+- [x] 注意力矩阵与 Mask 操作可视化  
 
-```
-      0     1      2      3     4      5      6      7      8      9      10     11     12     13     14     15
-0    627  1383  88861    279  1989    315  25607  16940  65931    323  32097     11    584  26458  13520    449
-1  15749   311   9615   3619   872   6444      6   3966     11  10742     11    323  32097     13   3296  22815
-2  13189   315   1701   5557   304   6763    374  88861   7528  10758   7526     13   4314   7526   2997   2613
-3    323  6376   2867  26470  1603  16661    264  49148    627     18     13  81745  48023  75311   7246  66044
-```
-
-- the positional encoding plot of the input sequence:
-
-![](resources/pe-64dim.png)
+👉 帮助理解 Transformer **Decoder-only 架构** 的训练流程。
 
 
-- the attention matrix of the first Q * K layer:
+注意力矩阵与 Mask 操作可视化 帮助理解 Transformer Decoder-only 架构 的训练流程。 
+其它内容 在 /GPT2 目录下，有一些示例代码演示如何微调预训练 GPT2 模型并进行推理。
 
-![](resources/QK-plot-1.png)
+## 推荐阅读
 
+- [nanoGPT](https://github.com/karpathy/nanoGPT) — Andrej Karpathy 的经典 GPT 教程  
+- [Transformers from Scratch](https://blog.matdmiller.com/posts/2023-06-10_transformers/notebook.html) — Mat Miller 的简洁实现  
+- [Attention is All You Need](https://arxiv.org/abs/1706.03762) — Transformer 原始论文  
+- [Transformer Architecture: LLM From Zero-to-Hero](https://medium.com/@waylandzhang/transformer-architecture-llms-zero-to-hero-98b1ee51a838) — 张老师的讲解文章  
 
-- after applying *Mask* attention of the above matrix:
-
-![](resources/QK-plot-2.png)
-
-
-# Other contents in this repo
-
-Under `/GPT2` directory, I put some sample code to show how to fine-tune a pre-trained GPT2 model, as well as inference from it.
-
-
-# If you want to dive deeper
-
-As if you're new to LLM, I recommend you to read my blog post [Transformer Architecture: LLM From Zero-to-Hero](https://medium.com/@waylandzhang/transformer-architecture-llms-zero-to-hero-98b1ee51a838) , which breaks down the concepts of a Transformer architecture.
-
-### References
-
-- [nanoGPT](https://github.com/karpathy/nanoGPT) Andrej Karpathy's famous video tutorial on how to build a GPT model from scratch.
-- [Transformers from Scratch](https://blog.matdmiller.com/posts/2023-06-10_transformers/notebook.html) A clear and easy implementation of Andrej's video contents by Mat Miller.
-- [Attention is all you need](https://arxiv.org/abs/1706.03762) The original paper of Transformer architecture.
